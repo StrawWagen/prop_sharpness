@@ -913,6 +913,30 @@ hook.Add( "GetFallDamage", "prop_sharpness_sharplanding", function( ply, speed )
 
 end )
 
+-- terminator nextbot base support
+hook.Add( "GetTermFallDamage", "prop_sharpness_sharplanding", function( bot, landEnt, fallHeight, originalDamage )
+    if not IsValid( landEnt ) then return end
+    if not landEnt.IsSharp then return end
+
+    local model = landEnt:GetModel()
+    if not model then return end
+
+    local sharpData = PROP_SHARPNESS.ModelData[model]
+    if not sharpData then return end
+
+    local botsVel = Vector( 0, 0, -fallHeight / 2 )
+
+    local currSharpDat = {
+        speed = fallHeight,
+        oldVel = botsVel,
+        collisonNormal = botsVel:GetNormalized(),
+
+    }
+
+    PROP_SHARPNESS.DoSharpPoke( sharpData, currSharpDat, landEnt, bot )
+
+end )
+
 
 local vec_zero = Vector( 0, 0, 0 )
 
